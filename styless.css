@@ -1,0 +1,13 @@
+header {
+    background: #12151e;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header nav a {
+    color: #fff;
+    margin-left: 15px;
+    text-decoration: none;
+}
