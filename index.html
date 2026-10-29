@@ -1,1 +1,2080 @@
-<h1>Mi Proyecto</h1>
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX MOTORS | Showroom Digital & Configurador</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Orbitron for Automotive Gauges/Titles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        apex: {
+                            red: '#E11D48',
+                            redGlow: '#FB7185',
+                            dark: '#090A0F',
+                            card: '#12151E',
+                            border: '#1F2433',
+                            accent: '#F43F5E'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #090A0F;
+            color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Patrón sutil de fibra de carbono */
+        .carbon-bg {
+            background-color: #090a0f;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px), radial-gradient(#1e293b 1px, #090a0f 1px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(18, 21, 30, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-strong {
+            background: rgba(12, 14, 20, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Efectos de brillo y hover en tarjetas */
+        .car-card {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .car-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.25);
+            border-color: rgba(225, 29, 72, 0.45);
+        }
+
+        /* Botón con pulso luminoso */
+        .btn-apex {
+            background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+            box-shadow: 0 8px 25px -4px rgba(225, 29, 72, 0.5);
+            transition: all 0.25s ease;
+        }
+        .btn-apex:hover {
+            background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+            box-shadow: 0 12px 30px -2px rgba(244, 63, 94, 0.7);
+            transform: translateY(-1px);
+        }
+        .btn-apex:active {
+            transform: translateY(1px);
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090A0F;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2433;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E11D48;
+        }
+
+        /* Sliders personalizados */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1E293B;
+            height: 6px;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #E11D48;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(225, 29, 72, 0.8);
+            transition: transform 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Animación de tacómetro / motor */
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(225, 29, 72, 0.6)); }
+            50% { filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.95)); }
+        }
+        .engine-active {
+            animation: pulseGlow 1s infinite;
+        }
+
+        /* Transición suave de vistas */
+        .view-section {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="carbon-bg min-h-screen flex flex-col selection:bg-rose-600 selection:text-white">
+
+    <!-- ==================== BARRA DE NAVEGACIÓN STICKY ==================== -->
+    <header class="sticky top-0 z-40 glass-strong border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Logo que vuelve al inicio -->
+            <button onclick="showCatalogView(true)" class="flex items-center gap-3 text-left group focus:outline-none">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-600 to-rose-900 flex items-center justify-center shadow-lg shadow-rose-600/30 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-gauge-high text-white text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-display font-black text-xl sm:text-2xl tracking-wider text-white block leading-none">
+                        APEX<span class="text-rose-500">MOTORS</span>
+                    </span>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-slate-400 block mt-1">Showroom Digital VIP</span>
+                </div>
+            </button>
+
+            <!-- Enlaces centrales (Desktop) -->
+            <nav class="hidden md:flex items-center gap-1 lg:gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+                <button onclick="showCatalogView(true)" id="nav-home" class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-rose-600/20 border border-rose-500/40 transition-all">
+                    <i class="fa-solid fa-house-chimney mr-1.5 text-rose-400"></i>Inicio
+                </button>
+                <button onclick="scrollToCatalogSection()" id="nav-catalog" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">
+                    <i class="fa-solid fa-car-side mr-1.5 text-rose-400"></i>Catálogo
+                </button>
+                <button onclick="openCompareModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-scale-balanced text-rose-400"></i>Comparador
+                    <span id="nav-compare-badge" class="px-1.5 py-0.5 text-[11px] rounded-full bg-rose-600 text-white font-bold hidden">0</span>
+                </button>
+                <button onclick="openBookingModal('testdrive', null)" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">
+                    <i class="fa-solid fa-flag-checkered mr-1.5 text-rose-400"></i>Test Drive
+                </button>
+            </nav>
+
+            <!-- Controles interactivos derecha -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Selector de Moneda USD / COP -->
+                <button onclick="toggleCurrency()" id="currency-btn" title="Cambiar divisa USD / COP" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-xs sm:text-sm font-semibold text-slate-200 flex items-center gap-1.5 transition-all">
+                    <i class="fa-solid fa-coins text-amber-400"></i>
+                    <span id="currency-label">USD ($)</span>
+                </button>
+
+                <!-- Botón Favoritos -->
+                <button onclick="openFavoritesModal()" title="Ver mis vehículos favoritos" class="relative p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-200 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-rose-500"></i>
+                    <span class="hidden sm:inline text-xs font-semibold">Favoritos</span>
+                    <span id="fav-counter" class="w-5 h-5 rounded-full bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center">0</span>
+                </button>
+
+                <!-- Botón Comparador Móvil/Acceso Rápido -->
+                <button onclick="openCompareModal()" title="Comparar vehículos seleccionados" class="md:hidden relative p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-200 transition-all">
+                    <i class="fa-solid fa-scale-balanced text-rose-400"></i>
+                    <span id="mobile-compare-counter" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center">0</span>
+                </button>
+
+                <!-- CTA Agendar Cita -->
+                <button onclick="openBookingModal('testdrive', null)" class="hidden lg:flex btn-apex px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white items-center gap-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Agendar Cita</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== VISTA 1: INICIO + CATÁLOGO DE VEHÍCULOS ==================== -->
+    <main id="catalog-view" class="flex-grow">
+
+        <!-- HERO BANNER CON AUTO INSIGNIA INTERACTIVO -->
+        <section class="relative overflow-hidden border-b border-slate-800/80">
+            <!-- Luces ambientales de fondo -->
+            <div class="absolute -top-32 -left-32 w-96 h-96 bg-rose-600/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-1/3 -right-32 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    
+                    <!-- Columna Izquierda: Info & Botones Directos -->
+                    <div class="lg:col-span-6 space-y-6 z-10">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold tracking-wider uppercase">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                            Lanzamiento Exclusivo 2026
+                        </div>
+
+                        <div class="space-y-2">
+                            <p id="hero-brand" class="font-display text-xs sm:text-sm uppercase tracking-[0.3em] text-slate-400">APEX HYPERCAR DIVISION</p>
+                            <h1 id="hero-title" class="font-display text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+                                VALKYRIE <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-red-400 to-amber-400">GT-R PRO</span>
+                            </h1>
+                        </div>
+
+                        <p id="hero-desc" class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
+                            Ingeniería aerodinámica activa con chasis monocasco de carbono e impulsión híbrida V8 Biturbo. Diseñado para dominar tanto el circuito como la calle con un solo botón.
+                        </p>
+
+                        <!-- Contadores de Rendimiento del Hero -->
+                        <div class="grid grid-cols-3 gap-3 sm:gap-4 pt-2">
+                            <div class="glass p-3.5 sm:p-4 rounded-2xl border-l-4 border-l-rose-500">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Potencia</span>
+                                <span id="hero-hp" class="font-display text-xl sm:text-2xl font-extrabold text-white mt-0.5 block">1,020 HP</span>
+                            </div>
+                            <div class="glass p-3.5 sm:p-4 rounded-2xl border-l-4 border-l-amber-400">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block">0 a 100 km/h</span>
+                                <span id="hero-accel" class="font-display text-xl sm:text-2xl font-extrabold text-white mt-0.5 block">2.3 s</span>
+                            </div>
+                            <div class="glass p-3.5 sm:p-4 rounded-2xl border-l-4 border-l-sky-400">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Vel. Máxima</span>
+                                <span id="hero-speed" class="font-display text-xl sm:text-2xl font-extrabold text-white mt-0.5 block">365 km/h</span>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción del Hero que dirigen al Producto o Catálogo -->
+                        <div class="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
+                            <button id="hero-product-btn" onclick="openProductDetail(1)" class="btn-apex px-6 py-4 rounded-2xl font-bold text-white text-sm sm:text-base flex items-center gap-3 group">
+                                <span>Ir al Producto y Configurar</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1.5 transition-transform"></i>
+                            </button>
+
+                            <button onclick="scrollToCatalogSection()" class="px-5 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-white font-semibold text-sm sm:text-base border border-slate-700 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-grip text-rose-500"></i>
+                                <span>Explorar Catálogo (8)</span>
+                            </button>
+                        </div>
+
+                        <!-- Selector Rápido de Destacados en el Hero -->
+                        <div class="pt-2">
+                            <span class="text-xs text-slate-400 block mb-2.5">Cambiar vehículo en vitrina principal:</span>
+                            <div class="flex flex-wrap gap-2" id="hero-quick-switcher">
+                                <!-- Se llena dinámicamente con JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Imagen Interactiva del Auto + Etiqueta de Precio -->
+                    <div class="lg:col-span-6 relative">
+                        <div class="relative rounded-3xl overflow-hidden border border-slate-700/70 shadow-2xl shadow-rose-950/30 group bg-slate-900">
+                            <img id="hero-image" 
+                                 src="https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=85" 
+                                 onerror="this.src='https://placehold.co/1200x750/12151e/e11d48?text=APEX+VALKYRIE+GT-R'"
+                                 alt="Vehículo Destacado" 
+                                 class="w-full h-[300px] sm:h-[400px] lg:h-[440px] object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                            
+                            <!-- Gradiente superpuesto -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+
+                            <!-- Badge superior -->
+                            <div class="absolute top-4 left-4 right-4 flex justify-between items-center">
+                                <span id="hero-category-badge" class="px-3.5 py-1.5 rounded-xl glass text-xs font-bold uppercase tracking-wider text-white">
+                                    Superdeportivo
+                                </span>
+                                <button id="hero-sound-btn" onclick="playEngineSound(1)" class="px-3.5 py-1.5 rounded-xl glass hover:bg-rose-600/80 text-xs font-bold text-white flex items-center gap-2 transition-all">
+                                    <i class="fa-solid fa-volume-high text-rose-400"></i>
+                                    <span>Escuchar Motor V8</span>
+                                </button>
+                            </div>
+
+                            <!-- Tarjeta flotante inferior dentro de la imagen -->
+                            <div class="absolute bottom-4 left-4 right-4 glass p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                    <span class="text-xs text-slate-400 block">Precio Base de Lista</span>
+                                    <span id="hero-price" class="font-display text-2xl font-black text-white">$285,000 USD</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button id="hero-testdrive-btn" onclick="openBookingModal('testdrive', 1)" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all">
+                                        <i class="fa-solid fa-steering-wheel mr-1"></i> Probar Manejo
+                                    </button>
+                                    <button id="hero-card-goto-btn" onclick="openProductDetail(1)" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all">
+                                        Ver Ficha Completa →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- BARRA DE FILTROS INTERACTIVOS Y BUSCADOR -->
+        <section id="catalogo-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                <div>
+                    <span class="text-rose-500 font-bold text-xs uppercase tracking-[0.25em] block mb-1">Inventario Disponible</span>
+                    <h2 class="font-display text-2xl sm:text-4xl font-black text-white">CATÁLOGO DE VEHÍCULOS</h2>
+                </div>
+                <p class="text-slate-400 text-sm max-w-md">
+                    Selecciona cualquier modelo para abrir su <strong class="text-white">página de producto interactiva</strong>, personalizar su pintura, agregar paquetes de competición y calcular tu financiación.
+                </p>
+            </div>
+
+            <!-- Contenedor Glass de Filtros -->
+            <div class="glass p-4 sm:p-5 rounded-3xl space-y-4">
+                <div class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
+                    
+                    <!-- Botones de Categoría -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar" id="category-filters">
+                        <button onclick="setCategoryFilter('Todos')" data-cat="Todos" class="cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-rose-600 text-white shadow-lg shadow-rose-600/30">
+                            <i class="fa-solid fa-border-all mr-1.5"></i>Todos (8)
+                        </button>
+                        <button onclick="setCategoryFilter('Superdeportivos')" data-cat="Superdeportivos" class="cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800">
+                            <i class="fa-solid fa-fire-flame-curved mr-1.5 text-rose-500"></i>Superdeportivos
+                        </button>
+                        <button onclick="setCategoryFilter('Eléctricos')" data-cat="Eléctricos" class="cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800">
+                            <i class="fa-solid fa-bolt mr-1.5 text-sky-400"></i>Eléctricos Hyper
+                        </button>
+                        <button onclick="setCategoryFilter('SUVs')" data-cat="SUVs" class="cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800">
+                            <i class="fa-solid fa-truck-monster mr-1.5 text-amber-400"></i>SUVs Luxury
+                        </button>
+                        <button onclick="setCategoryFilter('Gran Turismo')" data-cat="Gran Turismo" class="cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800">
+                            <i class="fa-solid fa-road mr-1.5 text-emerald-400"></i>Gran Turismo
+                        </button>
+                    </div>
+
+                    <!-- Buscador y Ordenamiento -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <!-- Input de Búsqueda -->
+                        <div class="relative flex-grow sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="search-input" oninput="handleSearchAndSort()" placeholder="Buscar modelo, marca, V8..." 
+                                   class="w-full pl-10 pr-8 py-2.5 bg-slate-900/95 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-rose-500 transition-colors">
+                            <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Selector de Orden -->
+                        <div class="relative">
+                            <select id="sort-select" onchange="handleSearchAndSort()" class="w-full sm:w-auto appearance-none pl-4 pr-10 py-2.5 bg-slate-900/95 border border-slate-700/80 rounded-xl text-sm text-slate-200 font-medium focus:outline-none focus:border-rose-500 cursor-pointer">
+                                <option value="featured">Ordenar: Destacados</option>
+                                <option value="price-asc">Precio: Menor a Mayor</option>
+                                <option value="price-desc">Precio: Mayor a Menor</option>
+                                <option value="hp-desc">Potencia: Mayor HP</option>
+                                <option value="accel-asc">Aceleración: Más Rápido</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- GRILLA DE PRODUCTOS (CATÁLOGO) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20">
+            <!-- Contador de resultados -->
+            <div class="flex items-center justify-between mb-6 text-xs sm:text-sm text-slate-400">
+                <span id="results-count">Mostrando 8 vehículos disponibles</span>
+                <span class="hidden sm:inline"><i class="fa-solid fa-hand-pointer text-rose-500 mr-1"></i>Haz clic en <strong class="text-slate-200">"Ir al Producto"</strong> para configurar y cotizar</span>
+            </div>
+
+            <!-- Grid de Tarjetas -->
+            <div id="cars-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Se inyecta dinámicamente con JavaScript -->
+            </div>
+
+            <!-- Estado vacío si la búsqueda no coincide -->
+            <div id="empty-state" class="hidden glass rounded-3xl p-12 text-center max-w-lg mx-auto my-8">
+                <div class="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-4 text-rose-500 text-2xl">
+                    <i class="fa-solid fa-car-burst"></i>
+                </div>
+                <h3 class="font-display text-xl font-bold text-white mb-2">No encontramos vehículos con ese criterio</h3>
+                <p class="text-slate-400 text-sm mb-6">Intenta con otro término de búsqueda o restablece los filtros de categoría.</p>
+                <button onclick="resetAllFilters()" class="btn-apex px-6 py-3 rounded-xl font-bold text-sm text-white">
+                    Mostrar Todos los Vehículos
+                </button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE BENEFICIOS / EXPERIENCIA VIP -->
+        <section class="border-t border-slate-800/80 bg-slate-950/60 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass p-6 rounded-3xl flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400 text-xl shrink-0">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-white text-base mb-1">Configuración a Medida</h3>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">Personaliza pintura exterior, frenos carbocerámicos, escapes de titanio y calcula tus cuotas al instante dentro de cada producto.</p>
+                        </div>
+                    </div>
+                    <div class="glass p-6 rounded-3xl flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl shrink-0">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-white text-base mb-1">Garantía & Telemetría</h3>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">Todos nuestros modelos cuentan con certificación de fábrica, mantenimiento incluido por 5 años y telemetría satelital.</p>
+                        </div>
+                    </div>
+                    <div class="glass p-6 rounded-3xl flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 text-xl shrink-0">
+                            <i class="fa-solid fa-plane-departure"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-white text-base mb-1">Entrega Internacional</h3>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">Entregamos tu vehículo configurado en showroom o directamente en tu domicilio en Bogotá, Medellín, Ciudad de México, Miami o Madrid.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== VISTA 2: PÁGINA DE PRODUCTO Y CONFIGURADOR DEDICADO ==================== -->
+    <section id="product-detail-view" class="hidden flex-grow pb-20">
+        <!-- Sub-header de navegación del producto -->
+        <div class="bg-slate-900/90 border-b border-slate-800 py-3.5 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+                <button onclick="showCatalogView(false)" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs sm:text-sm font-bold transition-all">
+                    <i class="fa-solid fa-arrow-left text-rose-500"></i>
+                    <span>Volver al Catálogo</span>
+                </button>
+
+                <!-- Breadcrumb & Acciones rápidas de ficha -->
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span>Catálogo</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span id="detail-breadcrumb-cat" class="text-slate-300">Superdeportivos</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span id="detail-breadcrumb-name" class="text-rose-400 font-bold">Valkyrie GT-R</span>
+                </div>
+
+                <!-- Navegación rápida al siguiente/anterior auto del catálogo -->
+                <div class="flex items-center gap-2">
+                    <button onclick="navigateAdjacentCar(-1)" title="Vehículo Anterior" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                        <i class="fa-solid fa-chevron-left mr-1"></i>Anterior
+                    </button>
+                    <button onclick="navigateAdjacentCar(1)" title="Siguiente Vehículo" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                        Siguiente<i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido Principal del Producto -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+                
+                <!-- COLUMNA IZQUIERDA (7 cols): Galería Visual Interactiva + Tabs de Especificaciones y Financiación -->
+                <div class="lg:col-span-7 space-y-8">
+                    
+                    <!-- Escenario Principal del Vehículo -->
+                    <div class="relative rounded-3xl overflow-hidden border border-slate-700/80 bg-slate-950 shadow-2xl">
+                        <!-- Imagen principal con filtro dinámico según color o vista -->
+                        <div class="relative h-[280px] sm:h-[420px] overflow-hidden bg-slate-900">
+                            <img id="detail-main-img" src="" alt="Vista del vehículo" 
+                                 class="w-full h-full object-cover object-center transition-all duration-500">
+                            <!-- Capa de tinte ambiental para reflejar el color personalizado -->
+                            <div id="detail-color-overlay" class="absolute inset-0 pointer-events-none mix-blend-overlay opacity-25 transition-colors duration-500"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40 pointer-events-none"></div>
+                        </div>
+
+                        <!-- Barra superior sobre la imagen -->
+                        <div class="absolute top-4 left-4 right-4 flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex items-center gap-2">
+                                <span id="detail-badge-cat" class="px-3 py-1 rounded-xl glass text-xs font-bold uppercase tracking-wider text-white"></span>
+                                <span id="detail-badge-color" class="px-3 py-1 rounded-xl glass text-xs font-semibold text-slate-200 flex items-center gap-2">
+                                    <span id="detail-color-dot" class="w-3 h-3 rounded-full bg-rose-600 inline-block border border-white"></span>
+                                    <span id="detail-color-name">Rojo Corsa</span>
+                                </span>
+                            </div>
+
+                            <!-- Botón Simulador de Rugido de Motor -->
+                            <button id="detail-engine-btn" onclick="playCurrentDetailEngine()" class="px-4 py-2 rounded-xl bg-rose-600/90 hover:bg-rose-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg transition-all">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span id="detail-engine-text">Arrancar Motor (Audio)</span>
+                            </button>
+                        </div>
+
+                        <!-- Selector de Ángulos / Vistas y Telemetría rápida abajo de la foto -->
+                        <div class="p-4 bg-slate-900/95 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-2" id="detail-gallery-thumbs">
+                                <!-- Botones de vista Exterior / Pista / Nocturna -->
+                                <button onclick="setDetailCameraView('exterior')" id="cam-exterior" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-bold transition-all">
+                                    <i class="fa-solid fa-camera mr-1"></i>Vista Estudio
+                                </button>
+                                <button onclick="setDetailCameraView('track')" id="cam-track" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                                    <i class="fa-solid fa-road mr-1"></i>Modo Circuito
+                                </button>
+                                <button onclick="setDetailCameraView('night')" id="cam-night" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                                    <i class="fa-solid fa-moon mr-1"></i>Ambiente Nocturno
+                                </button>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button id="detail-fav-btn" onclick="toggleFavoriteFromDetail()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-all">
+                                    <i class="fa-regular fa-heart text-rose-500"></i>
+                                    <span>Guardar</span>
+                                </button>
+                                <button id="detail-compare-btn" onclick="toggleCompareFromDetail()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-scale-balanced text-sky-400"></i>
+                                    <span>Comparar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de 4 Indicadores Clave del Producto -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <i class="fa-solid fa-horse-head text-rose-500 text-lg mb-1"></i>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Potencia Máxima</span>
+                            <span id="detail-stat-hp" class="font-display text-lg sm:text-xl font-black text-white">1,020 HP</span>
+                        </div>
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <i class="fa-solid fa-stopwatch text-amber-400 text-lg mb-1"></i>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Aceleración 0-100</span>
+                            <span id="detail-stat-accel" class="font-display text-lg sm:text-xl font-black text-white">2.3 s</span>
+                        </div>
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <i class="fa-solid fa-gauge-simple-high text-sky-400 text-lg mb-1"></i>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Velocidad Punta</span>
+                            <span id="detail-stat-speed" class="font-display text-lg sm:text-xl font-black text-white">365 km/h</span>
+                        </div>
+                        <div class="glass p-4 rounded-2xl text-center">
+                            <i class="fa-solid fa-gears text-emerald-400 text-lg mb-1"></i>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Tracción</span>
+                            <span id="detail-stat-drive" class="font-display text-base sm:text-lg font-black text-white">AWD Activa</span>
+                        </div>
+                    </div>
+
+                    <!-- TABS INTERACTIVOS DENTRO DEL PRODUCTO: FICHA TÉCNICA | EQUIPAMIENTO | FINANCIACIÓN -->
+                    <div class="glass rounded-3xl overflow-hidden border border-slate-800">
+                        <!-- Cabecera de Tabs -->
+                        <div class="grid grid-cols-3 border-b border-slate-800 bg-slate-950/60">
+                            <button onclick="switchProductTab('specs')" id="tab-btn-specs" class="py-4 px-3 text-xs sm:text-sm font-bold text-white border-b-2 border-rose-500 bg-rose-500/10 transition-all">
+                                <i class="fa-solid fa-microchip mr-1.5 text-rose-400"></i>Ficha Técnica
+                            </button>
+                            <button onclick="switchProductTab('features')" id="tab-btn-features" class="py-4 px-3 text-xs sm:text-sm font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition-all">
+                                <i class="fa-solid fa-star mr-1.5 text-amber-400"></i>Equipamiento VIP
+                            </button>
+                            <button onclick="switchProductTab('finance')" id="tab-btn-finance" class="py-4 px-3 text-xs sm:text-sm font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition-all">
+                                <i class="fa-solid fa-calculator mr-1.5 text-emerald-400"></i>Simulador Cuotas
+                            </button>
+                        </div>
+
+                        <!-- Contenido Tab 1: Ficha Técnica -->
+                        <div id="tab-content-specs" class="p-6 space-y-4">
+                            <h4 class="font-display text-sm uppercase tracking-wider text-slate-300 mb-3">Especificaciones de Ingeniería</h4>
+                            <div id="detail-specs-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+
+                        <!-- Contenido Tab 2: Equipamiento de Serie -->
+                        <div id="tab-content-features" class="hidden p-6">
+                            <h4 class="font-display text-sm uppercase tracking-wider text-slate-300 mb-4">Tecnología e Interior de Serie</h4>
+                            <ul id="detail-features-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-300">
+                                <!-- Se llena dinámicamente -->
+                            </ul>
+                        </div>
+
+                        <!-- Contenido Tab 3: Calculadora de Financiación en Tiempo Real -->
+                        <div id="tab-content-finance" class="hidden p-6 space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-800">
+                                <div>
+                                    <h4 class="font-display text-base font-bold text-white">Plan Financiero Personalizado APEX</h4>
+                                    <p class="text-xs text-slate-400">Calculado automáticamente sobre el precio configurado actual (incluyendo extras).</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-400 block">Cuota Mensual Estimada</span>
+                                    <span id="finance-monthly-payment" class="font-display text-2xl font-black text-emerald-400">$3,450 / mes</span>
+                                </div>
+                            </div>
+
+                            <!-- Sliders interactivos -->
+                            <div class="space-y-5">
+                                <div>
+                                    <div class="flex justify-between text-xs sm:text-sm mb-2">
+                                        <span class="text-slate-300 font-medium">Cuota Inicial (Enganche): <strong id="finance-down-pct-label" class="text-rose-400">30%</strong></span>
+                                        <span id="finance-down-amount-label" class="font-bold text-white">$85,500</span>
+                                    </div>
+                                    <input type="range" id="finance-down-slider" min="10" max="70" step="5" value="30" oninput="updateFinanceCalculator()" class="w-full">
+                                    <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+                                        <span>Mínimo 10%</span>
+                                        <span>50%</span>
+                                        <span>Máximo 70%</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs sm:text-sm mb-2">
+                                        <span class="text-slate-300 font-medium">Plazo de Financiación:</span>
+                                        <span id="finance-months-label" class="font-bold text-white">48 Meses (4 Años)</span>
+                                    </div>
+                                    <input type="range" id="finance-months-slider" min="12" max="72" step="12" value="48" oninput="updateFinanceCalculator()" class="w-full">
+                                    <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+                                        <span>12m</span>
+                                        <span>24m</span>
+                                        <span>36m</span>
+                                        <span>48m</span>
+                                        <span>60m</span>
+                                        <span>72m</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs">
+                                <div>
+                                    <span class="text-slate-400 block">Monto a Financiar:</span>
+                                    <strong id="finance-loan-amount" class="text-white text-sm">$199,500</strong>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block">Tasa Preferencial VIP:</span>
+                                    <strong class="text-emerald-400 text-sm">6.5% E.A. Fija</strong>
+                                </div>
+                                <button onclick="openBookingModal('reservation', currentDetailCarId)" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all">
+                                    Solicitar Pre-Aprobación →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COLUMNA DERECHA (5 cols): Configurador de Color, Paquetes Extras y Botones de Compra/Reserva -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="glass p-6 sm:p-7 rounded-3xl border border-slate-700/80 space-y-6 sticky top-24">
+                        
+                        <!-- Encabezado del Modelo y Precio Total en Tiempo Real -->
+                        <div class="border-b border-slate-800 pb-5">
+                            <div class="flex items-center justify-between">
+                                <span id="detail-brand" class="text-xs font-display uppercase tracking-[0.25em] text-rose-400 font-bold">APEX PERFORMANCE</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
+                                    <i class="fa-solid fa-circle-check mr-1"></i>Entrega Inmediata
+                                </span>
+                            </div>
+                            <h1 id="detail-title" class="font-display text-2xl sm:text-3xl font-black text-white mt-1">Valkyrie GT-R Pro</h1>
+                            <p id="detail-description" class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed"></p>
+
+                            <!-- Caja de Precio Dinámico -->
+                            <div class="mt-5 p-4 rounded-2xl bg-slate-950/90 border border-slate-800 flex items-baseline justify-between">
+                                <div>
+                                    <span class="text-[11px] uppercase tracking-wider text-slate-400 block">Precio Total Configurado</span>
+                                    <span id="detail-extras-summary-badge" class="text-[11px] text-rose-400 font-medium">Precio base de serie</span>
+                                </div>
+                                <div class="text-right">
+                                    <span id="detail-total-price" class="font-display text-2xl sm:text-3xl font-black text-white">$285,000</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1. SELECTOR INTERACTIVO DE PINTURA EXTERIOR -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-bold uppercase tracking-wider text-slate-300">
+                                    1. Color de Carrocería
+                                </label>
+                                <span id="selected-color-label" class="text-xs font-semibold text-rose-400">Rojo Corsa (Incluido)</span>
+                            </div>
+                            <div class="flex items-center gap-3" id="color-picker-container">
+                                <!-- Se genera con JS -->
+                            </div>
+                        </div>
+
+                        <!-- 2. PAQUETES Y EXTRAS DE COMPETICIÓN INTERACTIVOS -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-xs font-bold uppercase tracking-wider text-slate-300">
+                                    2. Paquetes y Equipamiento Extra
+                                </label>
+                                <span class="text-[11px] text-slate-400">Haz clic para sumar</span>
+                            </div>
+
+                            <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1" id="extras-container">
+                                <!-- Se genera con JS -->
+                            </div>
+                        </div>
+
+                        <!-- 3. BOTONES DE ACCIÓN DIRECTA DEL PRODUCTO -->
+                        <div class="space-y-3 pt-2 border-t border-slate-800">
+                            <button onclick="openBookingModal('reservation', currentDetailCarId)" class="w-full btn-apex py-4 px-6 rounded-2xl font-display font-bold text-sm sm:text-base text-white flex items-center justify-center gap-3 shadow-xl">
+                                <i class="fa-solid fa-key"></i>
+                                <span>Reservar Vehículo con esta Configuración</span>
+                            </button>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="openBookingModal('testdrive', currentDetailCarId)" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-solid fa-flag-checkered text-rose-500"></i>
+                                    <span>Agendar Test Drive</span>
+                                </button>
+
+                                <button onclick="copyConfigurationSummary()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-solid fa-copy text-sky-400"></i>
+                                    <span>Copiar Cotización</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- VEHÍCULOS SIMILARES (Permite saltar de un producto a otro directamente) -->
+            <div class="mt-16 pt-10 border-t border-slate-800/80">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-rose-500">Sigue Explorando</span>
+                        <h3 class="font-display text-xl sm:text-2xl font-black text-white">OTROS MODELOS QUE TE PUEDEN INTERESAR</h3>
+                    </div>
+                    <button onclick="showCatalogView(false)" class="text-xs sm:text-sm font-bold text-rose-400 hover:text-rose-300">
+                        Ver todo el catálogo →
+                    </button>
+                </div>
+                <div id="related-cars-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MODAL COMPARADOR DE VEHÍCULOS ==================== -->
+    <div id="compare-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-strong rounded-3xl max-w-5xl w-full max-h-[90vh] flex flex-col border border-slate-700 shadow-2xl overflow-hidden">
+            <!-- Header Modal -->
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-500">
+                        <i class="fa-solid fa-scale-balanced text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-lg sm:text-xl font-black text-white">COMPARADOR DE VEHÍCULOS</h3>
+                        <p class="text-xs text-slate-400">Compara hasta 3 modelos cara a cara en rendimiento y precio</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="clearCompareList()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-semibold">
+                        Limpiar Todo
+                    </button>
+                    <button onclick="closeCompareModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body Comparador -->
+            <div id="compare-modal-body" class="p-5 sm:p-6 overflow-y-auto">
+                <!-- Se genera con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DE FAVORITOS ==================== -->
+    <div id="favorites-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-strong rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col border border-slate-700 shadow-2xl overflow-hidden">
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-500">
+                        <i class="fa-solid fa-heart text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-lg sm:text-xl font-black text-white">MIS VEHÍCULOS GUARDADOS</h3>
+                        <p class="text-xs text-slate-400">Acceso directo a tus configuraciones y modelos favoritos</p>
+                    </div>
+                </div>
+                <button onclick="closeFavoritesModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="favorites-modal-body" class="p-5 sm:p-6 overflow-y-auto space-y-4">
+                <!-- Se genera con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DE RESERVA / AGENDAR TEST DRIVE ==================== -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-strong rounded-3xl max-w-xl w-full max-h-[92vh] overflow-y-auto border border-slate-700 shadow-2xl">
+            <div class="p-5 sm:p-6 border-b border-slate-800 flex items-center justify-between">
+                <div>
+                    <span id="booking-modal-tag" class="text-[11px] font-bold uppercase tracking-widest text-rose-500">Solicitud VIP</span>
+                    <h3 id="booking-modal-title" class="font-display text-xl font-black text-white">RESERVAR VEHÍCULO</h3>
+                </div>
+                <button onclick="closeBookingModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Formulario de Reserva -->
+            <form id="booking-form" onsubmit="submitBookingForm(event)" class="p-5 sm:p-6 space-y-4">
+                
+                <!-- Resumen del auto seleccionado -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center gap-4">
+                    <img id="booking-car-img" src="" alt="Auto" class="w-20 h-14 rounded-xl object-cover shrink-0">
+                    <div class="flex-grow">
+                        <label class="text-[11px] text-slate-400 block">Modelo Seleccionado</label>
+                        <select id="booking-car-select" onchange="updateBookingCarSelection()" class="w-full bg-transparent text-white font-display font-bold text-sm focus:outline-none cursor-pointer">
+                            <!-- Opciones dinámicas -->
+                        </select>
+                        <p id="booking-config-summary" class="text-xs text-rose-400 mt-0.5"></p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nombre Completo *</label>
+                        <input type="text" id="booking-name" required placeholder="Ej. Alejandro Mendoza" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Teléfono / WhatsApp *</label>
+                        <input type="tel" id="booking-phone" required placeholder="+57 300 123 4567" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Correo Electrónico *</label>
+                        <input type="email" id="booking-email" required placeholder="cliente@correo.com" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Showroom / Ciudad *</label>
+                        <select id="booking-city" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                            <option value="Bogotá - Calle 93 VIP">Bogotá - Showroom Calle 93</option>
+                            <option value="Medellín - El Poblado">Medellín - El Poblado</option>
+                            <option value="Miami - Brickell Luxury">Miami - Brickell Luxury</option>
+                            <option value="Ciudad de México - Polanco">CDMX - Polanco</option>
+                            <option value="Madrid - Salamanca">Madrid - Salamanca</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Fecha Preferida *</label>
+                        <input type="date" id="booking-date" required 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Modalidad de Atención</label>
+                        <select id="booking-modality" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-white focus:outline-none focus:border-rose-500">
+                            <option value="Presencial en Showroom">Presencial en Showroom</option>
+                            <option value="Entrega a Domicilio (Test Drive)">Llevar auto a mi domicilio</option>
+                            <option value="Videollamada en Vivo">Recorrido Virtual por Videollamada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-3">
+                    <button type="submit" class="w-full btn-apex py-3.5 rounded-xl font-display font-bold text-sm text-white flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span id="booking-submit-text">Confirmar Solicitud</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Pantalla de Éxito al Enviar Reserva -->
+            <div id="booking-success" class="hidden p-8 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400 text-3xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h4 class="font-display text-2xl font-black text-white">¡SOLICITUD CONFIRMADA!</h4>
+                <p id="booking-success-details" class="text-slate-300 text-sm leading-relaxed"></p>
+                <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-400 space-y-1 text-left">
+                    <div>Código de Referencia VIP: <strong id="booking-ref-code" class="text-rose-400 font-mono">APX-84920</strong></div>
+                    <div>Un Concierge de <strong class="text-white">APEX MOTORS</strong> te contactará en menos de 15 minutos.</div>
+                </div>
+                <button onclick="closeBookingModal()" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-all">
+                    Cerrar y Seguir Explorando
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFICACIÓN TOAST FLOTANTE ==================== -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+                <span class="font-display font-bold text-white tracking-wider">APEX MOTORS</span>
+                <span>© 2026 Showroom Digital Interactivo.</span>
+            </div>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="showCatalogView(true)" class="hover:text-white transition-colors">Inicio</button>
+                <button onclick="scrollToCatalogSection()" class="hover:text-white transition-colors">Catálogo</button>
+                <button onclick="openCompareModal()" class="hover:text-white transition-colors">Comparador</button>
+                <button onclick="openBookingModal('testdrive', 1)" class="hover:text-white transition-colors">Agendar Test Drive</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== LÓGICA JAVASCRIPT COMPLETA ==================== -->
+    <script>
+        // 1. BASE DE DATOS DE VEHÍCULOS (8 Modelos detallados con imágenes verificadas)
+        const carsData = [
+            {
+                id: 1,
+                name: "Valkyrie GT-R Pro",
+                brand: "APEX HYPERCAR",
+                category: "Superdeportivos",
+                priceUSD: 285000,
+                hp: 1020,
+                accel: 2.3,
+                topSpeed: 365,
+                drive: "AWD Activa",
+                engineType: "V8 4.0L Biturbo Híbrido",
+                transmission: "Doble Embrague 8 Vel.",
+                weight: "1,380 kg",
+                torque: "1,150 Nm",
+                image: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1000&q=85",
+                description: "El buque insignia de APEX. Chasis monocasco de fibra de carbono expuesta, aerodinámica activa inteligente y más de 1,000 caballos de fuerza listos para devorar el asfalto.",
+                features: [
+                    "Alerón activo hidráulico DRS",
+                    "Telemetría de pista integrada con 4 cámaras",
+                    "Asientos tipo cubo en Kevlar y Alcántara",
+                    "Sistema de sonido Burmester 3D Ultralight",
+                    "Suspensión neumática adaptativa Track-Mode",
+                    "Launch Control de competición calibrado"
+                ],
+                soundFreq: 115
+            },
+            {
+                id: 2,
+                name: "Porsche 911 GT3 RS Weissach",
+                brand: "PORSCHE",
+                category: "Superdeportivos",
+                priceUSD: 242000,
+                hp: 525,
+                accel: 3.0,
+                topSpeed: 312,
+                drive: "RWD Trasera",
+                engineType: "Bóxer 6 Cil. 4.0L Atmosférico",
+                transmission: "PDK 7 Velocidades",
+                weight: "1,450 kg",
+                torque: "465 Nm",
+                image: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1000&q=85",
+                description: "Precisión quirúrgica alemana. Su motor atmosférico gira hasta las 9,000 RPM entregando una experiencia de conducción pura y una carga aerodinámica de 860 kg.",
+                features: [
+                    "Paquete Weissach con techo y barras de carbono",
+                    "Dirección activa en el eje trasero",
+                    "Sistema DRS inspirado en Fórmula 1",
+                    "Jaula antivuelco de titanio ultraligera",
+                    "Frenos PCCB de alto rendimiento",
+                    "Modo Track configurable en el volante"
+                ],
+                soundFreq: 155
+            },
+            {
+                id: 3,
+                name: "Aether Ion-X Plaid",
+                brand: "AETHER EV",
+                category: "Eléctricos",
+                priceUSD: 178000,
+                hp: 1200,
+                accel: 1.9,
+                topSpeed: 340,
+                drive: "AWD Tri-Motor",
+                engineType: "Tri-Motor Magnético 900V",
+                transmission: "Directa Vectorial",
+                weight: "1,920 kg",
+                torque: "1,600 Nm",
+                image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1000&q=85",
+                description: "Aceleración gravitacional instantánea. Con tres motores independientes con vectorización de par y autonomía de 680 km, redefine el concepto de hiperdeportivo eléctrico.",
+                features: [
+                    "Arquitectura de carga ultrarrápida (10-80% en 14 min)",
+                    "Cabina panorámica con realidad aumentada HUD",
+                    "Conducción autónoma Nivel 3 en autopista",
+                    "Batería de estado sólido refrigerada por líquido",
+                    "Puertas de apertura diedral sensorizada",
+                    "Simulador acústico espacial personalizable"
+                ],
+                soundFreq: 220
+            },
+            {
+                id: 4,
+                name: "Lamborghini Urus Performante",
+                brand: "LAMBORGHINI",
+                category: "SUVs",
+                priceUSD: 268000,
+                hp: 666,
+                accel: 3.3,
+                topSpeed: 306,
+                drive: "AWD Torsen",
+                engineType: "V8 4.0L Biturbo",
+                transmission: "Automática 8 Vel.",
+                weight: "2,150 kg",
+                torque: "850 Nm",
+                image: "https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&w=1000&q=85",
+                description: "El alma de un superdeportivo con la versatilidad de un SUV de ultra lujo. Incorpora modo Rally y un uso extensivo de materiales compuestos que reducen el peso.",
+                features: [
+                    "Selector ANIMA con modos Strada, Sport, Corsa y Rally",
+                    "Escape deportivo de titanio Akrapovič de serie",
+                    "Diferencial central autoblocante Torsen",
+                    "Interior tapizado en Alcántara Nero Cosmus",
+                    "Rines forjados Pelope de 23 pulgadas",
+                    "Asistencia de visión nocturna térmica"
+                ],
+                soundFreq: 95
+            },
+            {
+                id: 5,
+                name: "Aston Martin DBS Superleggera",
+                brand: "ASTON MARTIN",
+                category: "Gran Turismo",
+                priceUSD: 315000,
+                hp: 759,
+                accel: 3.2,
+                topSpeed: 340,
+                drive: "RWD Trasera",
+                engineType: "V12 5.2L Twin-Turbo",
+                transmission: "ZF 8 Velocidades",
+                weight: "1,693 kg",
+                torque: "900 Nm",
+                image: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1000&q=85",
+                description: "Elegancia británica brutal. Un Gran Turismo con motor V12 biturbo capaz de recorrer continentes enteros con un confort aristocrático y un par motor demoledor.",
+                features: [
+                    "Cuero Bridge of Weir cosido a mano artesanalmente",
+                    "Sistema Aeroblade II de flujo de aire interno",
+                    "Audio Bang & Olufsen BeoSound de 1,000W",
+                    "Asientos climatizados con masaje de 16 posiciones",
+                    "Detalles interiores en madera de poro abierto o carbono",
+                    "Cámara periférica 360° de alta definición"
+                ],
+                soundFreq: 105
+            },
+            {
+                id: 6,
+                name: "Ferrari 296 GTB Assetto Fiorano",
+                brand: "FERRARI",
+                category: "Superdeportivos",
+                priceUSD: 342000,
+                hp: 830,
+                accel: 2.7,
+                topSpeed: 330,
+                drive: "RWD Híbrido",
+                engineType: "V6 120° Biturbo + MGU-K",
+                transmission: "F1 DCT 8 Vel.",
+                weight: "1,470 kg",
+                torque: "740 Nm",
+                image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1000&q=85",
+                description: "La nueva era de Maranello. Combina un motor V6 a 120 grados conocido como el 'Piccolo V12' por su agudo sonido, junto a un propulsor eléctrico enchufable de respuesta inmediata.",
+                features: [
+                    "Amortiguadores Multimatic derivados de competición GT",
+                    "Modo eDrive 100% eléctrico para 25 km urbanos",
+                    "Volante con eManettino táctil capacitivo",
+                    "Frenos ABS Evo con sensor de 6 direcciones",
+                    "Luneta trasera ultraligera en Lexan",
+                    "Pantalla dedicada para el copiloto con telemetría"
+                ],
+                soundFreq: 140
+            },
+            {
+                id: 7,
+                name: "Mercedes-AMG G63 Brabus 800",
+                brand: "MERCEDES-AMG",
+                category: "SUVs",
+                priceUSD: 295000,
+                hp: 800,
+                accel: 3.8,
+                topSpeed: 260,
+                drive: "4MATIC+ 4x4",
+                engineType: "V8 4.0L Biturbo Brabus",
+                transmission: "AMG Speedshift 9G",
+                weight: "2,480 kg",
+                torque: "1,000 Nm",
+                image: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?auto=format&fit=crop&w=1000&q=85",
+                description: "Presencia imponente e imparable en cualquier terreno. Preparación oficial Widestar con carrocería ensanchada en fibra de carbono y tres bloqueos de diferencial al 100%.",
+                features: [
+                    "Kit estético Widestar con capó en fibra de carbono",
+                    "Escapes laterales con válvulas de sonido electrónico",
+                    "Techo interior estrellado en fibra óptica LED",
+                    "3 bloqueos de diferencial mecánicos independientes",
+                    "Rines Monoblock Z Platinum Edition de 24 pulgadas",
+                    "Doble pantalla Widescreen Cockpit de 12.3 pulgadas"
+                ],
+                soundFreq: 85
+            },
+            {
+                id: 8,
+                name: "Taycan Turbo GT Weissach",
+                brand: "PORSCHE EV",
+                category: "Eléctricos",
+                priceUSD: 230000,
+                hp: 1092,
+                accel: 2.1,
+                topSpeed: 305,
+                drive: "AWD Dual-Motor",
+                engineType: "Dual-Motor Inversor Carburo Silicio",
+                transmission: "2 Velocidades Rear",
+                weight: "2,145 kg",
+                torque: "1,340 Nm",
+                image: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1000&q=85",
+                description: "Récord absoluto en Nürburgring y Laguna Seca. Cuenta con función 'Attack Mode' que libera 120 kW adicionales durante 10 segundos al presionar una leva en el volante.",
+                features: [
+                    "Suspensión hidráulica activa Porsche Active Ride",
+                    "Attack Mode estilo Fórmula E de activación rápida",
+                    "Alerón trasero fijo de carbono con Gurney flap",
+                    "Recuperación de energía de hasta 400 kW en frenada",
+                    "Supresión de asientos traseros para ahorro de 70 kg",
+                    "Cargador de a bordo de 800V ultrarrápido"
+                ],
+                soundFreq: 200
+            }
+        ];
+
+        // 2. COLORES Y PAQUETES EXTRAS PARA EL CONFIGURADOR DE PRODUCTO
+        const availableColors = [
+            { id: 'rojo', name: 'Rojo Corsa Metálico', hex: '#E11D48', overlay: 'rgba(225, 29, 72, 0.25)', priceUSD: 0 },
+            { id: 'negro', name: 'Negro Obsidiana', hex: '#1E293B', overlay: 'rgba(15, 23, 42, 0.45)', priceUSD: 0 },
+            { id: 'blanco', name: 'Blanco Glaciar Perla', hex: '#F8FAFC', overlay: 'rgba(248, 250, 252, 0.22)', priceUSD: 1800 },
+            { id: 'azul', name: 'Azul Eléctrico Le Mans', hex: '#0284C7', overlay: 'rgba(2, 132, 199, 0.35)', priceUSD: 3200 },
+            { id: 'oro', name: 'Amarillo Módena / Oro', hex: '#F59E0B', overlay: 'rgba(245, 158, 11, 0.30)', priceUSD: 3500 },
+            { id: 'verde', name: 'Verde Esmeralda Racing', hex: '#10B981', overlay: 'rgba(16, 185, 129, 0.30)', priceUSD: 4200 }
+        ];
+
+        const availableExtras = [
+            { id: 'carbon', name: 'Paquete Exterior Fibra de Carbono', desc: 'Splitter frontal, difusor y espejos en carbono forjado', priceUSD: 6500, icon: 'fa-feather-pointed' },
+            { id: 'brakes', name: 'Frenos Carbocerámicos Track Pro', desc: 'Discos perforados de 420mm con cálipers personalizados', priceUSD: 8200, icon: 'fa-compact-disc' },
+            { id: 'exhaust', name: 'Escape Deportivo de Titanio', desc: 'Válvulas acústicas activas y reducción de 14 kg de peso', priceUSD: 4900, icon: 'fa-fire' },
+            { id: 'interior', name: 'Interior Bespoke Alcántara & Carbono', desc: 'Costuras a medida, volante con LED de revoluciones', priceUSD: 3800, icon: 'fa-couch' },
+            { id: 'telemetry', name: 'Telemetría Satelital + Cámaras 4K', desc: 'Grabación automática de vueltas y análisis de fuerzas G', priceUSD: 2900, icon: 'fa-satellite-dish' }
+        ];
+
+        // 3. ESTADO DE LA APLICACIÓN
+        let currentCurrency = 'USD'; // 'USD' o 'COP'
+        const exchangeRateCOP = 4150; // Tasa referencial 1 USD = 4,150 COP
+
+        let activeCategory = 'Todos';
+        let favorites = [1, 2]; // IDs guardados inicialmente para demostrar interactividad
+        let compareList = [1, 3]; // IDs en comparador inicialmente
+        let currentHeroCarId = 1;
+
+        // Estado de la vista de detalle de producto
+        let currentDetailCarId = 1;
+        let selectedColorId = 'rojo';
+        let selectedExtrasIds = [];
+        let currentCameraView = 'exterior';
+
+        // Audio Context para el simulador de motor
+        let audioCtx = null;
+
+        // 4. FUNCIONES DE FORMATO DE MONEDA
+        function formatPrice(usdAmount) {
+            if (currentCurrency === 'USD') {
+                return '$' + usdAmount.toLocaleString('en-US') + ' USD';
+            } else {
+                const copMillions = Math.round((usdAmount * exchangeRateCOP) / 1000000);
+                return '$' + copMillions.toLocaleString('es-CO') + 'M COP';
+            }
+        }
+
+        function toggleCurrency() {
+            currentCurrency = currentCurrency === 'USD' ? 'COP' : 'USD';
+            document.getElementById('currency-label').textContent = currentCurrency === 'USD' ? 'USD ($)' : 'COP ($M)';
+            
+            // Actualizar vistas activas
+            updateHeroDisplay(currentHeroCarId);
+            renderCatalogGrid();
+            if (!document.getElementById('product-detail-view').classList.contains('hidden')) {
+                renderProductDetail(currentDetailCarId, false);
+            }
+            showToast(`Moneda cambiada a ${currentCurrency === 'USD' ? 'Dólares (USD)' : 'Pesos Colombianos (Millones COP)'}`, 'fa-coins');
+        }
+
+        // 5. HERO INTERACTIVO
+        function renderHeroQuickSwitcher() {
+            const container = document.getElementById('hero-quick-switcher');
+            const featuredIds = [1, 2, 3, 4];
+            container.innerHTML = featuredIds.map(id => {
+                const car = carsData.find(c => c.id === id);
+                const isActive = id === currentHeroCarId;
+                return `
+                    <button onclick="updateHeroDisplay(${car.id})" 
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${isActive 
+                                ? 'bg-rose-600 text-white border-rose-500 shadow-lg shadow-rose-600/30' 
+                                : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-slate-600 hover:text-white'}">
+                        ${car.name.split(' ').slice(0, 2).join(' ')}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function updateHeroDisplay(carId) {
+            currentHeroCarId = carId;
+            const car = carsData.find(c => c.id === carId);
+            if (!car) return;
+
+            document.getElementById('hero-brand').textContent = car.brand;
+            document.getElementById('hero-title').innerHTML = car.name.replace(/(\S+)$/, '<span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-red-400 to-amber-400">$1</span>');
+            document.getElementById('hero-desc').textContent = car.description;
+            document.getElementById('hero-hp').textContent = `${car.hp.toLocaleString()} HP`;
+            document.getElementById('hero-accel').textContent = `${car.accel} s`;
+            document.getElementById('hero-speed').textContent = `${car.topSpeed} km/h`;
+            document.getElementById('hero-image').src = car.image;
+            document.getElementById('hero-category-badge').textContent = car.category;
+            document.getElementById('hero-price').textContent = formatPrice(car.priceUSD);
+
+            // Actualizar botones del hero para que dirijan exactamente al producto activo
+            document.getElementById('hero-product-btn').setAttribute('onclick', `openProductDetail(${car.id})`);
+            document.getElementById('hero-card-goto-btn').setAttribute('onclick', `openProductDetail(${car.id})`);
+            document.getElementById('hero-testdrive-btn').setAttribute('onclick', `openBookingModal('testdrive', ${car.id})`);
+            document.getElementById('hero-sound-btn').setAttribute('onclick', `playEngineSound(${car.id})`);
+
+            renderHeroQuickSwitcher();
+        }
+
+        // 6. RENDERIZADO DEL CATÁLOGO Y FILTROS
+        function setCategoryFilter(category) {
+            activeCategory = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.className = "cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-rose-600 text-white shadow-lg shadow-rose-600/30";
+                } else {
+                    btn.className = "cat-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 text-slate-300 hover:text-white border border-slate-800";
+                }
+            });
+            handleSearchAndSort();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            handleSearchAndSort();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('sort-select').value = 'featured';
+            setCategoryFilter('Todos');
+        }
+
+        function handleSearchAndSort() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderCatalogGrid();
+        }
+
+        function renderCatalogGrid() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const sortBy = document.getElementById('sort-select').value;
+
+            let filtered = carsData.filter(car => {
+                const matchesCategory = activeCategory === 'Todos' || car.category === activeCategory;
+                const matchesQuery = car.name.toLowerCase().includes(query) ||
+                                     car.brand.toLowerCase().includes(query) ||
+                                     car.engineType.toLowerCase().includes(query) ||
+                                     car.category.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            // Ordenamiento
+            if (sortBy === 'price-asc') filtered.sort((a, b) => a.priceUSD - b.priceUSD);
+            if (sortBy === 'price-desc') filtered.sort((a, b) => b.priceUSD - a.priceUSD);
+            if (sortBy === 'hp-desc') filtered.sort((a, b) => b.hp - a.hp);
+            if (sortBy === 'accel-asc') filtered.sort((a, b) => a.accel - b.accel);
+
+            const grid = document.getElementById('cars-grid');
+            const emptyState = document.getElementById('empty-state');
+            document.getElementById('results-count').textContent = `Mostrando ${filtered.length} de ${carsData.length} vehículos disponibles`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(car => {
+                const isFav = favorites.includes(car.id);
+                const isCompared = compareList.includes(car.id);
+
+                return `
+                    <article class="car-card glass rounded-3xl overflow-hidden flex flex-col justify-between border border-slate-800/90 group">
+                        <div>
+                            <!-- Imagen con acciones rápidas y clic directo al producto -->
+                            <div class="relative h-56 overflow-hidden bg-slate-900 cursor-pointer" onclick="openProductDetail(${car.id})">
+                                <img src="${car.image}" 
+                                     onerror="this.src='https://placehold.co/800x500/12151e/e11d48?text=${encodeURIComponent(car.name)}'"
+                                     alt="${car.name}" 
+                                     class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30"></div>
+
+                                <!-- Categoría -->
+                                <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-xl glass text-[11px] font-bold uppercase tracking-wider text-white">
+                                    ${car.category}
+                                </span>
+
+                                <!-- Botones flotantes Favorito y Comparar -->
+                                <div class="absolute top-3.5 right-3.5 flex items-center gap-2" onclick="event.stopPropagation()">
+                                    <button onclick="toggleFavorite(${car.id})" title="Guardar en Favoritos" 
+                                            class="w-9 h-9 rounded-xl glass flex items-center justify-center transition-all ${isFav ? 'bg-rose-600 text-white' : 'text-slate-200 hover:bg-slate-800'}">
+                                        <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart text-sm"></i>
+                                    </button>
+                                    <button onclick="toggleCompare(${car.id})" title="Comparar Vehículo" 
+                                            class="w-9 h-9 rounded-xl glass flex items-center justify-center transition-all ${isCompared ? 'bg-sky-500 text-white' : 'text-slate-200 hover:bg-slate-800'}">
+                                        <i class="fa-solid fa-scale-balanced text-sm"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Etiqueta Motor abajo de la imagen -->
+                                <div class="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-xs">
+                                    <span class="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-slate-200 font-medium border border-white/10">
+                                        <i class="fa-solid fa-engine mr-1 text-rose-400"></i>${car.engineType}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Cuerpo de la Tarjeta -->
+                            <div class="p-5 sm:p-6">
+                                <span class="text-[10px] font-display uppercase tracking-[0.25em] text-rose-400 font-bold block">${car.brand}</span>
+                                <h3 onclick="openProductDetail(${car.id})" class="font-display text-lg sm:text-xl font-bold text-white mt-0.5 hover:text-rose-400 cursor-pointer transition-colors">
+                                    ${car.name}
+                                </h3>
+
+                                <!-- Píldoras de Especificaciones -->
+                                <div class="grid grid-cols-3 gap-2 my-4 p-3 rounded-2xl bg-slate-900/90 border border-slate-800/80 text-center">
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 block">Potencia</span>
+                                        <span class="font-display text-xs sm:text-sm font-bold text-white">${car.hp} HP</span>
+                                    </div>
+                                    <div class="border-x border-slate-800">
+                                        <span class="text-[10px] text-slate-400 block">0-100 km/h</span>
+                                        <span class="font-display text-xs sm:text-sm font-bold text-amber-400">${car.accel} s</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 block">Vel. Máx</span>
+                                        <span class="font-display text-xs sm:text-sm font-bold text-sky-400">${car.topSpeed} km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pie de Tarjeta: Precio y Botón que dirige al Producto -->
+                        <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 border-t border-slate-800/60 flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-wider text-slate-400 block">Precio desde</span>
+                                <span class="font-display text-base sm:text-lg font-black text-white">${formatPrice(car.priceUSD)}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button onclick="openBookingModal('testdrive', ${car.id})" title="Agendar Test Drive" 
+                                        class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">
+                                    <i class="fa-solid fa-flag-checkered text-sm"></i>
+                                </button>
+                                <button onclick="openProductDetail(${car.id})" 
+                                        class="btn-apex px-4 py-3 rounded-xl text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                                    <span>Ir al Producto</span>
+                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // 7. NAVEGACIÓN A LA PÁGINA DE PRODUCTO DEDICADA Y CONFIGURADOR
+        function openProductDetail(carId) {
+            currentDetailCarId = carId;
+            selectedColorId = 'rojo';
+            selectedExtrasIds = [];
+            currentCameraView = 'exterior';
+
+            // Ocultar catálogo y mostrar vista dedicada de producto
+            document.getElementById('catalog-view').classList.add('hidden');
+            document.getElementById('product-detail-view').classList.remove('hidden');
+
+            // Actualizar estado navbar
+            document.getElementById('nav-home').className = "px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all";
+            document.getElementById('nav-catalog').className = "px-4 py-2 rounded-xl text-sm font-medium text-white bg-rose-600/20 border border-rose-500/40 transition-all";
+
+            renderProductDetail(carId, true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showCatalogView(scrollToTop = false) {
+            document.getElementById('product-detail-view').classList.add('hidden');
+            document.getElementById('catalog-view').classList.remove('hidden');
+
+            document.getElementById('nav-home').className = "px-4 py-2 rounded-xl text-sm font-medium text-white bg-rose-600/20 border border-rose-500/40 transition-all";
+            document.getElementById('nav-catalog').className = "px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all";
+
+            if (scrollToTop) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function scrollToCatalogSection() {
+            showCatalogView(false);
+            const section = document.getElementById('catalogo-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function navigateAdjacentCar(direction) {
+            const currentIndex = carsData.findIndex(c => c.id === currentDetailCarId);
+            let nextIndex = (currentIndex + direction + carsData.length) % carsData.length;
+            openProductDetail(carsData[nextIndex].id);
+        }
+
+        function renderProductDetail(carId, resetTabs = false) {
+            const car = carsData.find(c => c.id === carId);
+            if (!car) return;
+
+            // Breadcrumbs y textos principales
+            document.getElementById('detail-breadcrumb-cat').textContent = car.category;
+            document.getElementById('detail-breadcrumb-name').textContent = car.name;
+            document.getElementById('detail-badge-cat').textContent = car.category;
+            document.getElementById('detail-brand').textContent = car.brand;
+            document.getElementById('detail-title').textContent = car.name;
+            document.getElementById('detail-description').textContent = car.description;
+
+            // Imagen y estadísticas
+            const mainImg = document.getElementById('detail-main-img');
+            mainImg.src = car.image;
+            mainImg.onerror = function() {
+                this.src = `https://placehold.co/1000x650/12151e/e11d48?text=${encodeURIComponent(car.name)}`;
+            };
+
+            document.getElementById('detail-stat-hp').textContent = `${car.hp.toLocaleString()} HP`;
+            document.getElementById('detail-stat-accel').textContent = `${car.accel} s`;
+            document.getElementById('detail-stat-speed').textContent = `${car.topSpeed} km/h`;
+            document.getElementById('detail-stat-drive').textContent = car.drive;
+
+            // Estado botones Favorito y Comparar dentro de la ficha
+            updateDetailActionButtons();
+
+            // Tabla de Especificaciones Técnicas
+            const specsList = document.getElementById('detail-specs-list');
+            const specsItems = [
+                { label: 'Motorización', value: car.engineType, icon: 'fa-engine' },
+                { label: 'Transmisión', value: car.transmission, icon: 'fa-gears' },
+                { label: 'Par Motor (Torque)', value: car.torque, icon: 'fa-bolt' },
+                { label: 'Peso en Vacío', value: car.weight, icon: 'fa-feather' },
+                { label: 'Sistema de Tracción', value: car.drive, icon: 'fa-road' },
+                { label: 'Relación Peso/Potencia', value: (parseInt(car.weight.replace(/\D/g,'')) / car.hp).toFixed(2) + ' kg/HP', icon: 'fa-gauge-high' }
+            ];
+            specsList.innerHTML = specsItems.map(item => `
+                <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400 flex items-center gap-2">
+                        <i class="fa-solid ${item.icon} text-rose-500"></i>${item.label}
+                    </span>
+                    <strong class="text-xs sm:text-sm text-white font-semibold">${item.value}</strong>
+                </div>
+            `).join('');
+
+            // Lista de Equipamiento VIP
+            const featuresList = document.getElementById('detail-features-list');
+            featuresList.innerHTML = car.features.map(feat => `
+                <li class="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
+                    <span>${feat}</span>
+                </li>
+            `).join('');
+
+            // Renderizar Selector de Colores
+            renderColorPicker();
+
+            // Renderizar Paquetes Extras
+            renderExtrasSelector();
+
+            // Recalcular precio total y calculadora financiera
+            recalculateConfiguredPrice();
+
+            // Renderizar autos relacionados al final de la página de producto
+            renderRelatedCars(car);
+
+            if (resetTabs) {
+                switchProductTab('specs');
+                setDetailCameraView('exterior');
+            }
+        }
+
+        function renderColorPicker() {
+            const container = document.getElementById('color-picker-container');
+            const activeColor = availableColors.find(c => c.id === selectedColorId) || availableColors[0];
+
+            document.getElementById('detail-color-dot').style.backgroundColor = activeColor.hex;
+            document.getElementById('detail-color-name').textContent = activeColor.name;
+            document.getElementById('detail-color-overlay').style.backgroundColor = activeColor.overlay;
+
+            const extraText = activeColor.priceUSD === 0 ? '(Incluido)' : `(+${formatPrice(activeColor.priceUSD)})`;
+            document.getElementById('selected-color-label').textContent = `${activeColor.name} ${extraText}`;
+
+            container.innerHTML = availableColors.map(color => {
+                const isSelected = color.id === selectedColorId;
+                return `
+                    <button onclick="selectCarColor('${color.id}')" title="${color.name}"
+                            class="w-10 h-10 rounded-full flex items-center justify-center transition-all ${isSelected ? 'ring-2 ring-offset-2 ring-offset-slate-900 ring-rose-500 scale-110' : 'opacity-75 hover:opacity-100 hover:scale-105'}"
+                            style="background-color: ${color.hex}; border: 2px solid rgba(255,255,255,0.25);">
+                        ${isSelected ? `<i class="fa-solid fa-check text-xs ${color.id === 'blanco' ? 'text-slate-900' : 'text-white'}"></i>` : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCarColor(colorId) {
+            selectedColorId = colorId;
+            renderColorPicker();
+            recalculateConfiguredPrice();
+        }
+
+        function renderExtrasSelector() {
+            const container = document.getElementById('extras-container');
+            container.innerHTML = availableExtras.map(extra => {
+                const isSelected = selectedExtrasIds.includes(extra.id);
+                return `
+                    <div onclick="toggleExtraPackage('${extra.id}')" 
+                         class="p-3.5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-3 ${isSelected 
+                            ? 'bg-rose-600/15 border-rose-500 text-white' 
+                            : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-rose-600 text-white' : 'bg-slate-800 text-slate-400'}">
+                                <i class="fa-solid ${isSelected ? 'fa-check' : extra.icon} text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs sm:text-sm font-bold text-white">${extra.name}</div>
+                                <div class="text-[11px] text-slate-400">${extra.desc}</div>
+                            </div>
+                        </div>
+                        <div class="text-xs font-display font-bold ${isSelected ? 'text-rose-400' : 'text-slate-300'} whitespace-nowrap">
+                            +${formatPrice(extra.priceUSD)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleExtraPackage(extraId) {
+            if (selectedExtrasIds.includes(extraId)) {
+                selectedExtrasIds = selectedExtrasIds.filter(id => id !== extraId);
+            } else {
+                selectedExtrasIds.push(extraId);
+            }
+            renderExtrasSelector();
+            recalculateConfiguredPrice();
+        }
+
+        function getConfiguredTotalUSD() {
+            const car = carsData.find(c => c.id === currentDetailCarId);
+            if (!car) return 0;
+            const colorObj = availableColors.find(c => c.id === selectedColorId) || availableColors[0];
+            const extrasSum = selectedExtrasIds.reduce((acc, id) => {
+                const ex = availableExtras.find(e => e.id === id);
+                return acc + (ex ? ex.priceUSD : 0);
+            }, 0);
+            return car.priceUSD + colorObj.priceUSD + extrasSum;
+        }
+
+        function recalculateConfiguredPrice() {
+            const totalUSD = getConfiguredTotalUSD();
+            document.getElementById('detail-total-price').textContent = formatPrice(totalUSD);
+
+            const extrasCount = selectedExtrasIds.length;
+            const colorObj = availableColors.find(c => c.id === selectedColorId);
+            const badge = document.getElementById('detail-extras-summary-badge');
+
+            if (extrasCount === 0 && (!colorObj || colorObj.priceUSD === 0)) {
+                badge.textContent = "Precio base de serie sin extras";
+            } else {
+                badge.textContent = `Incluye pintura ${colorObj.name.split(' ')[0]} + ${extrasCount} paquete(s) extra`;
+            }
+
+            updateFinanceCalculator();
+        }
+
+        // 8. CALCULADORA DE FINANCIACIÓN EN TIEMPO REAL
+        function updateFinanceCalculator() {
+            const totalUSD = getConfiguredTotalUSD();
+            const downPct = parseInt(document.getElementById('finance-down-slider').value, 10);
+            const months = parseInt(document.getElementById('finance-months-slider').value, 10);
+
+            const downPaymentUSD = Math.round(totalUSD * (downPct / 100));
+            const loanAmountUSD = totalUSD - downPaymentUSD;
+
+            // Tasa anual 6.5% -> mensual
+            const monthlyRate = 0.065 / 12;
+            const monthlyPaymentUSD = Math.round(
+                (loanAmountUSD * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+            );
+
+            document.getElementById('finance-down-pct-label').textContent = `${downPct}%`;
+            document.getElementById('finance-down-amount-label').textContent = formatPrice(downPaymentUSD);
+            document.getElementById('finance-months-label').textContent = `${months} Meses (${(months / 12).toFixed(0)} Años)`;
+            document.getElementById('finance-loan-amount').textContent = formatPrice(loanAmountUSD);
+            document.getElementById('finance-monthly-payment').textContent = `${formatPrice(monthlyPaymentUSD)} / mes`;
+        }
+
+        // 9. TABS Y VISTAS DE CÁMARA EN LA PÁGINA DE PRODUCTO
+        function switchProductTab(tabName) {
+            const tabs = ['specs', 'features', 'finance'];
+            tabs.forEach(t => {
+                const content = document.getElementById(`tab-content-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tabName) {
+                    content.classList.remove('hidden');
+                    btn.className = "py-4 px-3 text-xs sm:text-sm font-bold text-white border-b-2 border-rose-500 bg-rose-500/10 transition-all";
+                } else {
+                    content.classList.add('hidden');
+                    btn.className = "py-4 px-3 text-xs sm:text-sm font-semibold text-slate-400 hover:text-white border-b-2 border-transparent transition-all";
+                }
+            });
+        }
+
+        function setDetailCameraView(mode) {
+            currentCameraView = mode;
+            const img = document.getElementById('detail-main-img');
+            const modes = ['exterior', 'track', 'night'];
+
+            modes.forEach(m => {
+                const btn = document.getElementById(`cam-${m}`);
+                if (m === mode) {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-bold transition-all";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all";
+                }
+            });
+
+            if (mode === 'exterior') {
+                img.style.filter = 'contrast(1.04) saturate(1.08)';
+                img.style.transform = 'scale(1)';
+            } else if (mode === 'track') {
+                img.style.filter = 'contrast(1.18) saturate(1.25)';
+                img.style.transform = 'scale(1.08)';
+            } else if (mode === 'night') {
+                img.style.filter = 'brightness(0.78) contrast(1.25) hue-rotate(-8deg)';
+                img.style.transform = 'scale(1.03)';
+            }
+        }
+
+        function renderRelatedCars(currentCar) {
+            const related = carsData
+                .filter(c => c.id !== currentCar.id)
+                .sort((a, b) => (a.category === currentCar.category ? -1 : 1))
+                .slice(0, 3);
+
+            const container = document.getElementById('related-cars-grid');
+            container.innerHTML = related.map(car => `
+                <div onclick="openProductDetail(${car.id})" class="car-card glass p-4 rounded-2xl border border-slate-800 cursor-pointer flex items-center gap-4 group">
+                    <img src="${car.image}" alt="${car.name}" class="w-24 h-20 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform">
+                    <div class="flex-grow min-w-0">
+                        <span class="text-[10px] font-bold uppercase text-rose-400 block">${car.brand}</span>
+                        <h4 class="font-display font-bold text-white text-sm truncate group-hover:text-rose-400 transition-colors">${car.name}</h4>
+                        <div class="text-xs text-slate-400 mt-1">${car.hp} HP • 0-100 en ${car.accel}s</div>
+                        <div class="font-display font-bold text-white text-xs mt-1">${formatPrice(car.priceUSD)}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-rose-500 transition-colors"></i>
+                </div>
+            `).join('');
+        }
+
+        // 10. SIMULADOR DE RUGIDO DE MOTOR CON WEB AUDIO API
+        function playEngineSound(carId) {
+            const car = carsData.find(c => c.id === carId) || carsData[0];
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                // Configurar timbre según si es eléctrico o combustión
+                const isEV = car.category === 'Eléctricos';
+                osc1.type = isEV ? 'sine' : 'sawtooth';
+                osc2.type = isEV ? 'triangle' : 'square';
+
+                const baseFreq = car.soundFreq || 110;
+                osc1.frequency.setValueAtTime(baseFreq * 0.6, now);
+                osc1.frequency.exponentialRampToValueAtTime(baseFreq * 2.2, now + 0.55);
+                osc1.frequency.exponentialRampToValueAtTime(baseFreq * 1.1, now + 1.1);
+                osc1.frequency.exponentialRampToValueAtTime(baseFreq * 2.6, now + 1.6);
+                osc1.frequency.exponentialRampToValueAtTime(baseFreq * 0.7, now + 2.3);
+
+                osc2.frequency.setValueAtTime(baseFreq * 0.3, now);
+                osc2.frequency.exponentialRampToValueAtTime(baseFreq * 1.1, now + 0.55);
+                osc2.frequency.exponentialRampToValueAtTime(baseFreq * 1.3, now + 1.6);
+                osc2.frequency.exponentialRampToValueAtTime(baseFreq * 0.35, now + 2.3);
+
+                gainNode.gain.setValueAtTime(0.01, now);
+                gainNode.gain.linearRampToValueAtTime(0.18, now + 0.2);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.4);
+
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 2.4);
+                osc2.stop(now + 2.4);
+
+                showToast(`Rugido de motor activado: ${car.name} (${car.engineType})`, 'fa-volume-high');
+            } catch (e) {
+                showToast(`Simulando motor: ${car.name}`, 'fa-gauge-high');
+            }
+        }
+
+        function playCurrentDetailEngine() {
+            const btn = document.getElementById('detail-engine-btn');
+            btn.classList.add('engine-active');
+            playEngineSound(currentDetailCarId);
+            setTimeout(() => btn.classList.remove('engine-active'), 2400);
+        }
+
+        // 11. FAVORITOS Y COMPARADOR
+        function updateBadges() {
+            document.getElementById('fav-counter').textContent = favorites.length;
+            const navBadge = document.getElementById('nav-compare-badge');
+            const mobBadge = document.getElementById('mobile-compare-counter');
+
+            navBadge.textContent = compareList.length;
+            mobBadge.textContent = compareList.length;
+            if (compareList.length > 0) {
+                navBadge.classList.remove('hidden');
+            } else {
+                navBadge.classList.add('hidden');
+            }
+        }
+
+        function toggleFavorite(carId) {
+            const car = carsData.find(c => c.id === carId);
+            if (favorites.includes(carId)) {
+                favorites = favorites.filter(id => id !== carId);
+                showToast(`${car.name} eliminado de tus Favoritos`, 'fa-heart-crack');
+            } else {
+                favorites.push(carId);
+                showToast(`${car.name} guardado en tus Favoritos`, 'fa-heart');
+            }
+            updateBadges();
+            renderCatalogGrid();
+            updateDetailActionButtons();
+        }
+
+        function toggleFavoriteFromDetail() {
+            toggleFavorite(currentDetailCarId);
+        }
+
+        function toggleCompare(carId) {
+            const car = carsData.find(c => c.id === carId);
+            if (compareList.includes(carId)) {
+                compareList = compareList.filter(id => id !== carId);
+                showToast(`${car.name} quitado del comparador`, 'fa-scale-balanced');
+            } else {
+                if (compareList.length >= 3) {
+                    showToast('Máximo 3 vehículos en el comparador. Quita uno para agregar otro.', 'fa-circle-exclamation');
+                    return;
+                }
+                compareList.push(carId);
+                showToast(`${car.name} añadido al comparador (${compareList.length}/3)`, 'fa-scale-balanced');
+            }
+            updateBadges();
+            renderCatalogGrid();
+            updateDetailActionButtons();
+        }
+
+        function toggleCompareFromDetail() {
+            toggleCompare(currentDetailCarId);
+        }
+
+        function updateDetailActionButtons() {
+            const favBtn = document.getElementById('detail-fav-btn');
+            const compBtn = document.getElementById('detail-compare-btn');
+            if (!favBtn || !compBtn) return;
+
+            const isFav = favorites.includes(currentDetailCarId);
+            const isComp = compareList.includes(currentDetailCarId);
+
+            favBtn.innerHTML = `<i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart text-rose-500"></i><span>${isFav ? 'En Favoritos' : 'Guardar'}</span>`;
+            compBtn.innerHTML = `<i class="fa-solid fa-scale-balanced text-sky-400"></i><span>${isComp ? 'Comparando' : 'Comparar'}</span>`;
+        }
+
+        // MODAL COMPARADOR
+        function openCompareModal() {
+            renderCompareModalContent();
+            document.getElementById('compare-modal').classList.remove('hidden');
+        }
+
+        function closeCompareModal() {
+            document.getElementById('compare-modal').classList.add('hidden');
+        }
+
+        function clearCompareList() {
+            compareList = [];
+            updateBadges();
+            renderCatalogGrid();
+            renderCompareModalContent();
+        }
+
+        function renderCompareModalContent() {
+            const body = document.getElementById('compare-modal-body');
+            if (compareList.length === 0) {
+                body.innerHTML = `
+                    <div class="text-center py-12 space-y-4">
+                        <i class="fa-solid fa-scale-balanced text-4xl text-slate-500"></i>
+                        <h4 class="font-display text-lg font-bold text-white">No hay vehículos seleccionados para comparar</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">Haz clic en el icono de balanza en cualquier vehículo del catálogo para comparar hasta 3 modelos lado a lado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const selectedCars = compareList.map(id => carsData.find(c => c.id === id)).filter(Boolean);
+            const maxHp = Math.max(...selectedCars.map(c => c.hp));
+            const maxSpeed = Math.max(...selectedCars.map(c => c.topSpeed));
+
+            body.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-${selectedCars.length} gap-6">
+                    ${selectedCars.map(car => `
+                        <div class="glass p-5 rounded-2xl border border-slate-700/80 flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="relative h-40 rounded-xl overflow-hidden mb-3">
+                                    <img src="${car.image}" alt="${car.name}" class="w-full h-full object-cover">
+                                    <button onclick="toggleCompare(${car.id}); renderCompareModalContent();" class="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/70 text-white hover:bg-rose-600 text-xs">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                                <span class="text-[10px] font-bold uppercase text-rose-400">${car.brand}</span>
+                                <h4 class="font-display text-base font-bold text-white">${car.name}</h4>
+                                <p class="font-display text-lg font-black text-emerald-400 mt-1">${formatPrice(car.priceUSD)}</p>
+
+                                <div class="space-y-3 mt-4 pt-4 border-t border-slate-800 text-xs">
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-slate-400">Potencia</span>
+                                            <strong class="text-white">${car.hp} HP</strong>
+                                        </div>
+                                        <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                            <div class="h-full bg-rose-500 rounded-full" style="width: ${Math.round((car.hp / maxHp) * 100)}%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-slate-400">Velocidad Punta</span>
+                                            <strong class="text-white">${car.topSpeed} km/h</strong>
+                                        </div>
+                                        <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                            <div class="h-full bg-sky-400 rounded-full" style="width: ${Math.round((car.topSpeed / maxSpeed) * 100)}%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-between py-1.5 border-b border-slate-800/80">
+                                        <span class="text-slate-400">0 a 100 km/h:</span>
+                                        <strong class="text-amber-400">${car.accel} seg</strong>
+                                    </div>
+                                    <div class="flex justify-between py-1.5 border-b border-slate-800/80">
+                                        <span class="text-slate-400">Motor:</span>
+                                        <strong class="text-white">${car.engineType}</strong>
+                                    </div>
+                                    <div class="flex justify-between py-1.5">
+                                        <span class="text-slate-400">Tracción:</span>
+                                        <strong class="text-white">${car.drive}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="closeCompareModal(); openProductDetail(${car.id});" class="w-full btn-apex py-2.5 rounded-xl text-xs font-bold text-white">
+                                Ir a este Producto →
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // MODAL FAVORITOS
+        function openFavoritesModal() {
+            const body = document.getElementById('favorites-modal-body');
+            if (favorites.length === 0) {
+                body.innerHTML = `
+                    <div class="text-center py-10 space-y-3">
+                        <i class="fa-regular fa-heart text-4xl text-slate-500"></i>
+                        <h4 class="font-display text-base font-bold text-white">Tu lista de favoritos está vacía</h4>
+                        <p class="text-xs text-slate-400">Guarda los autos que más te gusten para acceder a su ficha en cualquier momento.</p>
+                    </div>
+                `;
+            } else {
+                const favCars = favorites.map(id => carsData.find(c => c.id === id)).filter(Boolean);
+                body.innerHTML = favCars.map(car => `
+                    <div class="glass p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 w-full sm:w-auto">
+                            <img src="${car.image}" alt="${car.name}" class="w-24 h-16 rounded-xl object-cover shrink-0">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-rose-400">${car.brand}</span>
+                                <h4 class="font-display font-bold text-white text-sm sm:text-base">${car.name}</h4>
+                                <span class="font-display text-xs sm:text-sm font-extrabold text-emerald-400">${formatPrice(car.priceUSD)}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <button onclick="toggleFavorite(${car.id}); openFavoritesModal();" class="p-2.5 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-400 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <button onclick="closeFavoritesModal(); openProductDetail(${car.id});" class="btn-apex px-4 py-2.5 rounded-xl text-xs font-bold text-white">
+                                Configurar Producto →
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('favorites-modal').classList.remove('hidden');
+        }
+
+        function closeFavoritesModal() {
+            document.getElementById('favorites-modal').classList.add('hidden');
+        }
+
+        // 12. MODAL DE RESERVA Y TEST DRIVE
+        function openBookingModal(type, carId) {
+            const targetId = carId || currentDetailCarId || 1;
+            const select = document.getElementById('booking-car-select');
+            select.innerHTML = carsData.map(c => `
+                <option value="${c.id}" ${c.id === targetId ? 'selected' : ''} class="bg-slate-900 text-white">
+                    ${c.brand} - ${c.name} (${formatPrice(c.priceUSD)})
+                </option>
+            `).join('');
+
+            const isReservation = type === 'reservation';
+            document.getElementById('booking-modal-tag').textContent = isReservation ? 'Orden de Reserva Exclusiva' : 'Experiencia de Conducción';
+            document.getElementById('booking-modal-title').textContent = isReservation ? 'RESERVAR VEHÍCULO CONFIGURADO' : 'AGENDAR TEST DRIVE VIP';
+            document.getElementById('booking-submit-text').textContent = isReservation ? 'Confirmar Reserva de Unidad' : 'Confirmar Cita de Manejo';
+
+            // Fecha mínima mañana
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('booking-date').value = tomorrow.toISOString().split('T')[0];
+
+            document.getElementById('booking-form').classList.remove('hidden');
+            document.getElementById('booking-success').classList.add('hidden');
+
+            updateBookingCarSelection();
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function updateBookingCarSelection() {
+            const selectedId = parseInt(document.getElementById('booking-car-select').value, 10);
+            const car = carsData.find(c => c.id === selectedId) || carsData[0];
+            document.getElementById('booking-car-img').src = car.image;
+
+            const summaryEl = document.getElementById('booking-config-summary');
+            if (selectedId === currentDetailCarId && selectedExtrasIds.length > 0) {
+                const colorObj = availableColors.find(c => c.id === selectedColorId);
+                summaryEl.textContent = `Configuración: ${colorObj.name} + ${selectedExtrasIds.length} extra(s) • Total: ${formatPrice(getConfiguredTotalUSD())}`;
+            } else {
+                summaryEl.textContent = `${car.engineType} • ${car.hp} HP • Precio: ${formatPrice(car.priceUSD)}`;
+            }
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function submitBookingForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('booking-name').value;
+            const city = document.getElementById('booking-city').value;
+            const date = document.getElementById('booking-date').value;
+            const selectedId = parseInt(document.getElementById('booking-car-select').value, 10);
+            const car = carsData.find(c => c.id === selectedId);
+
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('booking-success').classList.remove('hidden');
+            document.getElementById('booking-ref-code').textContent = 'APX-' + Math.floor(10000 + Math.random() * 90000);
+            document.getElementById('booking-success-details').innerHTML = `
+                Gracias <strong class="text-white">${name}</strong>. Hemos registrado tu solicitud para el <strong class="text-rose-400">${car.name}</strong> en nuestra sede de <strong class="text-white">${city}</strong> para el día <strong class="text-white">${date}</strong>.
+            `;
+            showToast('¡Solicitud VIP registrada con éxito!', 'fa-circle-check');
+        }
+
+        // 13. COPIAR COTIZACIÓN AL PORTAPAPELES
+        function copyConfigurationSummary() {
+            const car = carsData.find(c => c.id === currentDetailCarId);
+            const colorObj = availableColors.find(c => c.id === selectedColorId);
+            const total = formatPrice(getConfiguredTotalUSD());
+            const extrasNames = selectedExtrasIds.map(id => availableExtras.find(e => e.id === id)?.name).filter(Boolean);
+
+            const summaryText = `COTIZACIÓN APEX MOTORS\nModelo: ${car.brand} ${car.name}\nMotor: ${car.engineType} (${car.hp} HP)\nPintura: ${colorObj.name}\nExtras: ${extrasNames.length ? extrasNames.join(', ') : 'Configuración de Serie'}\nPrecio Total: ${total}`;
+
+            const tempArea = document.createElement('textarea');
+            tempArea.value = summaryText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+
+            showToast('Cotización copiada al portapapeles', 'fa-clipboard-check');
+        }
+
+        // 14. SISTEMA DE NOTIFICACIONES TOAST
+        function showToast(message, icon = 'fa-circle-info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass-strong px-4 py-3 rounded-2xl border border-rose-500/40 text-white text-xs sm:text-sm font-medium shadow-2xl flex items-center gap-3 pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `
+                <div class="w-7 h-7 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-rose-400 shrink-0">
+                    <i class="fa-solid ${icon}"></i>
+                </div>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // INICIALIZACIÓN AL CARGAR LA PÁGINA
+        window.onload = function() {
+            updateBadges();
+            updateHeroDisplay(1);
+            renderCatalogGrid();
+        };
+    </script>
+</body>
+</html>
